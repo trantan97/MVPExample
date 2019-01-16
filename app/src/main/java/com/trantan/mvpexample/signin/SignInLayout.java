@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.trantan.mvpexample.R;
 import com.trantan.mvpexample.model.Account;
+import com.trantan.mvpexample.model.repository.AccountRepository;
 
 public class SignInLayout implements View.OnClickListener, SignInContract.View {
     private EditText mTextUserName;
@@ -15,6 +16,7 @@ public class SignInLayout implements View.OnClickListener, SignInContract.View {
     private TextView mTextCreatAccount;
     private Button mButtonSingIn;
     private View mLayoutSignIn;
+    private View mLayoutSignUp;
     private SignInPresenter mSignInPresenter;
 
     public SignInLayout(View view) {
@@ -24,8 +26,13 @@ public class SignInLayout implements View.OnClickListener, SignInContract.View {
         initPresenter();
     }
 
+    public void setLayoutSignUp(View layoutSignUp) {
+        mLayoutSignUp = layoutSignUp;
+    }
+
     private void initPresenter() {
-        mSignInPresenter = new SignInPresenter(mLayoutSignIn.getContext());
+        mSignInPresenter
+                = new SignInPresenter(AccountRepository.getIntance(mLayoutSignIn.getContext()));
         mSignInPresenter.setView(this);
     }
 
@@ -46,6 +53,7 @@ public class SignInLayout implements View.OnClickListener, SignInContract.View {
         switch (v.getId()) {
             case R.id.text_create_account:
                 mLayoutSignIn.setVisibility(View.GONE);
+                mLayoutSignUp.setVisibility(View.VISIBLE);
                 break;
             case R.id.button_sign_in:
                 signIn();
@@ -57,7 +65,7 @@ public class SignInLayout implements View.OnClickListener, SignInContract.View {
     private void signIn() {
         String username = mTextUserName.getText().toString();
         String pass = mTextPassword.getText().toString();
-        Account account = new Account(username,pass);
+        Account account = new Account(username, pass);
         mSignInPresenter.handleSignIn(account);
     }
 
